@@ -6,7 +6,7 @@ local M = {}
 ---@param name string Name of the plugin repository
 ---@param plugin_path string Full path of the plugin repository
 function M.restore_repo(name, plugin_path)
-    vim.notify("[patches: " .. name .. "] Restoring plugin repository ...", 0)
+    vim.notify("[patches: " .. name .. "] Restoring plugin repository...", 0)
     util.git_execute(plugin_path, { "restore", "." })
     vim.notify("[patches: " .. name .. "] Done", 0)
 end
@@ -21,8 +21,7 @@ function M.apply_patch(name, patch_path, plugin_path)
 end
 
 function M.create_group_and_cmd()
-    M.group_id = vim.api.nvim_create_augroup("LazyPatches", {})
-
+    local group_id = vim.api.nvim_create_augroup("LazyPatches", {})
     local patches_path = Config.options.patches_path
     local lazy_path = Config.options.lazy_path
 
@@ -34,11 +33,11 @@ function M.create_group_and_cmd()
             "LazyUpdate*", -- before/after an update
             "LazyCheck*", -- before/after checking for updates
         },
-        group = M.group_id,
+        group = group_id,
         callback = function(info)
             for patch in vim.fs.dir(patches_path) do
-                local patch_path = patches_path .. patch
-                local repo_path = lazy_path .. patch:gsub("%.patch", "")
+                local patch_path = patches_path .. "/" .. patch
+                local repo_path = lazy_path .. "/" .. patch:gsub("%.patch", "")
                 -- if vim.uv.fs_stat(repo_path) then
                 if vim.loop.fs_stat(repo_path) then
                     M.restore_repo(patch, repo_path)
