@@ -1,0 +1,160 @@
+*lazy-local-patcher.nvim.txt*  For Neovim >= 0.9 Last change: 2023 December 06
+
+==============================================================================
+Table of Contents                  *lazy-local-patcher.nvim-table-of-contents*
+
+1. Description                           |lazy-local-patcher.nvim-description|
+2. Requirements                         |lazy-local-patcher.nvim-requirements|
+3. Installation                         |lazy-local-patcher.nvim-installation|
+4. Usage                                       |lazy-local-patcher.nvim-usage|
+  - Setup                                      |lazy-local-patcher.nvim-setup|
+  - Configuration                      |lazy-local-patcher.nvim-configuration|
+  - Defaults                                |lazy-local-patcher.nvim-defaults|
+  - Patches                                  |lazy-local-patcher.nvim-patches|
+  - Manual executions              |lazy-local-patcher.nvim-manual-executions|
+5. Contributions                       |lazy-local-patcher.nvim-contributions|
+
+==============================================================================
+1. Description                           *lazy-local-patcher.nvim-description*
+
+Sometimes, I need to apply small patches to a plugin to fix something without
+waiting for the PR to reach upstream, or simply for custom needs. However, when
+doing so, Lazy can’t sync the repo because there are local changes… This
+small plugin addresses that issue by automatically applying the patches through
+git commands (if its possible) and revert them before Lazy starts doing its
+lazy magic.
+
+
+==============================================================================
+2. Requirements                         *lazy-local-patcher.nvim-requirements*
+
+- Neovim <https://neovim.io/> >= 0.9.0
+
+
+==============================================================================
+3. Installation                         *lazy-local-patcher.nvim-installation*
+
+Just like any other plugin, but without calling any setup:
+
+>lua
+    { "polirritmico/lazy-local-patcher.nvim" },
+<
+
+
+==============================================================================
+4. Usage                                       *lazy-local-patcher.nvim-usage*
+
+
+SETUP                                          *lazy-local-patcher.nvim-setup*
+
+Once its installed, create the `patches` directory inside your nvim config
+folder:
+
+>command
+    $ mkdir ~/.config/nvim/patches
+<
+
+Here you could add your patches. Two considerations:
+
+1. Only **one file** per plugin.
+2. The name of the patch should match the repository name. (More precisely, the
+directory name inside the Lazy root folder). E. g.: `nvim-treesitter.diff`
+
+Depending on your config, the plugin may or not need to be loaded before Lazy.
+
+
+BEFORE LAZY ~
+
+Before requiring or setting up Lazy in your `init.lua` require the plugin and
+run the `setup` function:
+
+>lua
+    -- First add the local path of the repository inside the root path of Lazy:
+    vim.opt.rtp:prepend(vim.fn.stdpath("data") .. "/lazy/lazy-local-patcher.nvim")
+    
+    -- Then run the setup function:
+    require("lazy-local-patcher").setup()
+<
+
+This would set the autocommands that handle the Lazy user events calls.
+
+
+AFTER LAZY ~
+
+This is much simpler:
+
+>lua
+    require("lazy-local-patcher").setup()
+<
+
+
+CONFIGURATION                          *lazy-local-patcher.nvim-configuration*
+
+Custom folders could be passed to the `setup` function:
+
+>lua
+    require("lazy-local-patcher").setup({
+        patches_path = "/custom/patch/path",
+        lazy_path = "/custom/root/lazy/path"
+    })
+<
+
+
+DEFAULTS                                    *lazy-local-patcher.nvim-defaults*
+
+>lua
+    local defaults = {
+        lazy_path = vim.fn.stdpath("data") .. "/lazy", -- directory where lazy install the plugins
+        patches_path = vim.fn.stdpath("config") .. "/patches", -- directory where diff patches files are stored
+    }
+<
+
+
+PATCHES                                      *lazy-local-patcher.nvim-patches*
+
+Patches are applied using:
+
+>command
+    git -C <plugin path in Lazy root> apply --ignore-space-change <patch>
+<
+
+Example of patch creation:
+
+>
+    cd .local/share/nvim/lazy/nvim-treesitter
+    nvim some/file
+    git diff | tee ~/.config/nvim/patches/nvim-treesitter.patch
+<
+
+Now enter into Nvim and sync the plugin with Lazy.
+
+
+MANUAL EXECUTIONS                  *lazy-local-patcher.nvim-manual-executions*
+
+You could use `apply_all` or `restore_all` functions to manually apply/restore
+all patches inside the `patches-path` folder:
+
+>
+    :lua require("lazy-local-patcher").apply_all()
+    [patches: nvim-treesitter.patch] Applying patch...
+    [patches: nvim-treesitter.patch] Done
+<
+
+>
+    :lua require("lazy-local-patcher").restore_all()
+    [patches: nvim-treesitter.patch] Restoring plugin repository...
+    [patches: nvim-treesitter.patch] Done
+<
+
+
+==============================================================================
+5. Contributions                       *lazy-local-patcher.nvim-contributions*
+
+While this plugin is primarily designed for my personal use and tailored to a
+very specific use case, suggestions, issues, or pull requests are very welcome.
+
+Enjoy
+
+Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
+
+vim:tw=78:ts=8:noet:ft=help:norl:

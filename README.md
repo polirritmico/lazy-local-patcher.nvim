@@ -118,13 +118,18 @@ git diff | tee ~/.config/nvim/patches/nvim-treesitter.patch
 
 Now enter into Nvim and sync the plugin with Lazy.
 
-### Manually apply/restore all patches
+### Manual executions
+
+You could use `apply_all` or `restore_all` functions to manually apply/restore
+all patches inside the `patches-path` folder:
 
 ```
 :lua require("lazy-local-patcher").apply_all()
 [patches: nvim-treesitter.patch] Applying patch...
 [patches: nvim-treesitter.patch] Done
+```
 
+```
 :lua require("lazy-local-patcher").restore_all()
 [patches: nvim-treesitter.patch] Restoring plugin repository...
 [patches: nvim-treesitter.patch] Done
