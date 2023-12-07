@@ -66,7 +66,7 @@ Depending on your config, the plugin may or not need to be loaded before Lazy.
 
 #### Before Lazy
 
-Before requiring or setting up Lazy in your `init.lua` require the plugin and
+Before requiring or setting up Lazy in your `init.lua`, require the plugin and
 run the `setup` function:
 
 ```lua
@@ -75,13 +75,18 @@ vim.opt.rtp:prepend(vim.fn.stdpath("data") .. "/lazy/lazy-local-patcher.nvim")
 
 -- Then run the setup function:
 require("lazy-local-patcher").setup()
+
+-- ...
+
+-- Lazy
+require("lazy").setup(plugins, opts)
 ```
 
 This would set the autocommands that handle the Lazy user events calls.
 
 #### After Lazy
 
-This is much simpler:
+This is much simpler, just config like any other plugin (even through Lazy):
 
 ```lua
 require("lazy-local-patcher").setup()
@@ -112,7 +117,7 @@ local defaults = {
 Patches are applied using:
 
 ```command
-git -C <plugin path in Lazy root> apply --ignore-space-change <patch>
+git -C <plugin_path_in_Lazy_root> apply --ignore-space-change <patch>
 ```
 
 Example of patch creation:
