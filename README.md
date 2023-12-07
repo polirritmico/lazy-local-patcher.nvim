@@ -59,7 +59,7 @@ Here you could add your patches. Two considerations:
 
 1. Only **one file** per plugin.
 2. The name of the patch should match the repository name. (More precisely, the
-   directory name inside the Lazy root folder). E. g.: `nvim-treesitter.diff`
+   directory name inside the Lazy root folder). E. g.: `nvim-treesitter.patch`
 
 
 Depending on your config, the plugin may or not need to be loaded before Lazy.
