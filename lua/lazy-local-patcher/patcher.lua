@@ -52,15 +52,15 @@ end
 
 function M.restore_all()
     for patch in vim.fs.dir(Config.options.patches_path) do
-        local repo_path = Config.options.lazy_path .. patch:gsub("%.patch", "")
+        local repo_path = Config.options.lazy_path .. "/" .. patch:gsub("%.patch", "")
         M.restore_repo(patch, repo_path)
     end
 end
 
 function M.apply_all()
     for patch in vim.fs.dir(Config.options.patches_path) do
-        local patch_path = Config.options.patches_path .. patch
-        local repo_path = Config.options.lazy_path .. patch:gsub("%.patch", "")
+        local patch_path = Config.options.patches_path .. "/" .. patch
+        local repo_path = Config.options.lazy_path .. "/" .. patch:gsub("%.patch", "")
         M.apply_patch(patch, patch_path, repo_path)
     end
 end
