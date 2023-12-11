@@ -2,7 +2,7 @@ M = {}
 
 ---@param path string
 ---@param cmd string[] git command to execute
----@patam error_level number? log level for errors. Hide if nil or false
+---@param error_level number? log level for errors. Hide if nil or false
 M.git_execute = function(path, cmd, error_level)
     local command = { "git", "-C", path, unpack(cmd) }
     local command_output = vim.fn.system(command)

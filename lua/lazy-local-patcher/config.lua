@@ -18,7 +18,7 @@ local check_paths = function(path)
     end
 end
 
----@param options PatcherConfig?
+---@param options PatcherOptions?
 function M.setup(options)
     M.options = vim.tbl_deep_extend("force", {}, defaults, options or {})
     check_paths(M.options.lazy_path)
