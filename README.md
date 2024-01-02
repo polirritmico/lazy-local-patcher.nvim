@@ -39,18 +39,20 @@ magic.
 
 ## 📦 Installation
 
-Just like any other plugin, but without calling any setup:
-
 ```lua
-{ "polirritmico/lazy-local-patcher.nvim" },
+return {
+    "polirritmico/lazy-local-patcher.nvim",
+    config = true,
+    ft = "lazy", -- for lazy loading
+}
 ```
 
 ## 🚀 Usage
 
 ### ⚙️ Setup
 
-Once its installed, create the `patches` directory inside your nvim config
-folder:
+Create the `patches` directory inside your nvim config folder or the plugin will
+complain about the missing dir:
 
 ```command
 $ mkdir ~/.config/nvim/patches
@@ -62,36 +64,6 @@ Here you could add your patches. Two considerations:
 2. The name of the patch should match the repository name. (More precisely, the
    directory name inside the Lazy root folder). e.g.: `nvim-treesitter.patch`
 
-
-Depending on your config, the plugin may or not need to be loaded before Lazy.
-
-#### Before Lazy
-
-Before requiring or setting up Lazy in your `init.lua`, require the plugin and
-run the `setup` function:
-
-```lua
--- First add the local path of the repository inside the root path of Lazy:
-vim.opt.rtp:prepend(vim.fn.stdpath("data") .. "/lazy/lazy-local-patcher.nvim")
-
--- Then run the setup function:
-require("lazy-local-patcher").setup()
-
--- ...
-
--- Lazy
-require("lazy").setup(plugins, opts)
-```
-
-This would set the autocommands that handle the Lazy user events calls.
-
-#### After Lazy
-
-This is much simpler, just config like any other plugin (even through Lazy):
-
-```lua
-require("lazy-local-patcher").setup()
-```
 
 ### ⚙️ Configuration
 
@@ -105,6 +77,8 @@ require("lazy-local-patcher").setup({
 ```
 
 ### Defaults
+
+Lazy local patcher comes with the following defaults:
 
 ```lua
 local defaults = {
@@ -125,7 +99,7 @@ Example of patch creation:
 
 ```
 cd .local/share/nvim/lazy/nvim-treesitter
-nvim some/file
+nvim edit/some/file
 git diff | tee ~/.config/nvim/patches/nvim-treesitter.patch
 ```
 
