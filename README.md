@@ -10,32 +10,34 @@
 
 ## 🐧 Description
 
-Sometimes, I need to apply small patches to a plugin to fix something without
-waiting for the PR to reach upstream, or simply for custom needs. However,
-when doing so, Lazy can't sync the repo because there are local changes... This
-small plugin addresses that issue by automatically applying the patches through
-git commands (if its possible) and revert them before Lazy starts doing its lazy
-magic.
+Sometimes, I need to apply small patches to a plugin to fulfill a very niche use
+case or to fix something without waiting for the PR to reach upstream. However,
+when doing so, Lazy can't sync the repo because there are local changes.
+
+This small plugin addresses this issue by automatically applying the patches
+through git commands (if possible) and reverting them before Lazy starts its
+lazy magic.
 
 <!-- panvimdoc-ignore-start -->
 
 ---
 
 **Before:**
+
 > ![Before](https://github.com/polirritmico/lazy-local-patcher.nvim/assets/24460484/cd97c60b-e735-4b8f-966e-5a5d9c17a366)
 
 **After:**
+
 > ![After](https://github.com/polirritmico/lazy-local-patcher.nvim/assets/24460484/80ec51c6-aba9-4483-a341-dcc5ac4e6621)
 
 ---
-<!-- panvimdoc-ignore-end -->
 
+<!-- panvimdoc-ignore-end -->
 
 ## 📋 Requirements
 
 - [Neovim](https://neovim.io/) >= 0.9.0
 - [Lazy.nvim](https://github.com/folke/lazy.nvim) >= 9.24.0
-
 
 ## 📦 Installation
 
@@ -51,8 +53,8 @@ return {
 
 ### ⚙️ Setup
 
-Create the `patches` directory inside your nvim config folder or the plugin will
-complain about the missing dir:
+Create the `patches` directory or the plugin will complain about the missing
+dir: (default path)
 
 ```command
 $ mkdir ~/.config/nvim/patches
@@ -64,15 +66,14 @@ Here you could add your patches. Two considerations:
 2. The name of the patch should match the repository name. (More precisely, the
    directory name inside the Lazy root folder). e.g.: `nvim-treesitter.patch`
 
-
 ### ⚙️ Configuration
 
 Custom folders could be passed to the `setup` function:
 
 ```lua
 require("lazy-local-patcher").setup({
-    patches_path = "/custom/patch/path",
-    lazy_path = "/custom/root/lazy/path"
+    lazy_path = "/custom/root/lazy/path", -- directory where lazy install the plugins
+    patches_path = "/custom/patch/path", -- directory where diff patches files are stored
 })
 ```
 
@@ -124,9 +125,7 @@ all patches inside the `patches-path` folder:
 
 ## 🌱 Contributions
 
-While this plugin is primarily designed for my personal use and tailored to
-a very specific use case, suggestions, issues, or pull requests are very
-welcome.
+While this plugin is primarily designed for my personal use and tailored to a
+very specific use case, suggestions, issues, or pull requests are very welcome.
 
-Enjoy
-
+**_Enjoy_**
