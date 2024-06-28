@@ -1,4 +1,4 @@
-*lazy-local-patcher.nvim.txt*   For Neovim >= 0.9   Last change: 2024 April 06
+*lazy-local-patcher.nvim.txt*    For Neovim >= 0.9   Last change: 2024 June 28
 
 ==============================================================================
 Table of Contents                  *lazy-local-patcher.nvim-table-of-contents*

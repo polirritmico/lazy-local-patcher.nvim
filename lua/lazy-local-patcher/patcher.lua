@@ -20,34 +20,12 @@ function M.apply_patch(name, patch_path, plugin_path)
   vim.notify("[patches: " .. name .. "] Done", 0)
 end
 
-function M.create_group_and_cmd()
-  local group_id = vim.api.nvim_create_augroup("LazyPatches", {})
-  local patches_path = Config.options.patches_path
-  local lazy_path = Config.options.lazy_path
-
-  vim.api.nvim_create_autocmd("User", {
-    desc = "Apply/clean patches when Lazy events are triggered.",
-    pattern = {
-      "LazySync*", -- before/after running sync.
-      "LazyInstall*", -- before/after an install
-      "LazyUpdate*", -- before/after an update
-      "LazyCheck*", -- before/after checking for updates
-    },
-    group = group_id,
-    callback = function(info)
-      for patch in vim.fs.dir(patches_path) do
-        local patch_path = patches_path .. "/" .. patch
-        local repo_path = lazy_path .. "/" .. patch:gsub("%.patch", "")
-        -- if vim.uv.fs_stat(repo_path) then
-        if vim.loop.fs_stat(repo_path) then
-          M.restore_repo(patch, repo_path)
-          if not info.match:match("Pre$") then
-            M.apply_patch(patch, patch_path, repo_path)
-          end
-        end
-      end
-    end,
-  })
+function M.apply_all()
+  for patch in vim.fs.dir(Config.options.patches_path) do
+    local patch_path = Config.options.patches_path .. "/" .. patch
+    local repo_path = Config.options.lazy_path .. "/" .. patch:gsub("%.patch", "")
+    M.apply_patch(patch, patch_path, repo_path)
+  end
 end
 
 function M.restore_all()
@@ -57,12 +35,37 @@ function M.restore_all()
   end
 end
 
-function M.apply_all()
-  for patch in vim.fs.dir(Config.options.patches_path) do
-    local patch_path = Config.options.patches_path .. "/" .. patch
-    local repo_path = Config.options.lazy_path .. "/" .. patch:gsub("%.patch", "")
-    M.apply_patch(patch, patch_path, repo_path)
-  end
+function M.create_group_and_cmd()
+  local group_id = vim.api.nvim_create_augroup("LazyPatches", {})
+  M.sync_call = false
+
+  vim.api.nvim_create_autocmd("User", {
+    desc = "Restore patches when Lazy 'Pre' events are triggered.",
+    group = group_id,
+    pattern = { "LazySyncPre", "LazyInstallPre", "LazyUpdatePre", "LazyCheckPre" },
+    callback = function(ev)
+      if not M.sync_call then
+        M.restore_all()
+      end
+      if ev.match == "LazySyncPre" then
+        M.sync_call = true
+      end
+    end,
+  })
+
+  vim.api.nvim_create_autocmd("User", {
+    desc = "Apply patches when Lazy events are triggered.",
+    group = group_id,
+    pattern = { "LazySync", "LazyInstall", "LazyUpdate", "LazyCheck" },
+    callback = function(ev)
+      if not M.sync_call then
+        M.apply_all()
+      elseif ev.match == "LazySync" then
+        M.apply_all()
+        M.sync_call = false
+      end
+    end,
+  })
 end
 
 return M
