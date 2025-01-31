@@ -38,6 +38,7 @@ lazy magic.
 
 - [Neovim](https://neovim.io/) >= 0.9.0
 - [Lazy.nvim](https://github.com/folke/lazy.nvim) >= 9.24.0
+- Git
 
 ## 📦 Installation
 

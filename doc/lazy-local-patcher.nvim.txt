@@ -1,4 +1,4 @@
-*lazy-local-patcher.nvim.txt*    For Neovim >= 0.9   Last change: 2024 June 28
+*lazy-local-patcher.nvim.txt*  For Neovim >= 0.9  Last change: 2025 January 31
 
 ==============================================================================
 Table of Contents                  *lazy-local-patcher.nvim-table-of-contents*
@@ -32,6 +32,7 @@ lazy magic.
 
 - Neovim <https://neovim.io/> >= 0.9.0
 - Lazy.nvim <https://github.com/folke/lazy.nvim> >= 9.24.0
+- Git
 
 
 ==============================================================================
@@ -62,8 +63,9 @@ dir: (default path)
 Here you could add your patches. Two considerations:
 
 1. Only **one file** per plugin.
-2. The name of the patch should match the repository name. (More precisely, the
-directory name inside the Lazy root folder). e.g.: `nvim-treesitter.patch`
+2. The name of the patch should match the repository name (more precisely, the
+directory name inside the Lazy root folder) and the file extension must be
+`.patch`. e.g.: `nvim-treesitter.patch`
 
 
 CONFIGURATION                          *lazy-local-patcher.nvim-configuration*
