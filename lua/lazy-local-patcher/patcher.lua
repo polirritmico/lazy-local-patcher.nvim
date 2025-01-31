@@ -1,5 +1,4 @@
-local Config = require("lazy-local-patcher.config")
-
+---@class LazyLocalPatcher.Main
 local M = {}
 
 local patcher = "[lazy-local-patcher] "
@@ -12,7 +11,8 @@ M.git_execute = function(path, cmd, error_level)
   local command_output = vim.fn.system(command)
   if vim.v.shell_error ~= 0 then
     if error_level then
-      M.error(command, command_output, error_level)
+      local msg = patcher .. "Error running git command: %s\n%s"
+      error(string.format(msg, patcher, command, command_output), error_level)
     end
     return { success = false, output = command_output }
   end
@@ -42,27 +42,30 @@ function M.apply_patch(name, patch_path, plugin_path)
   vim.notify(patcher .. "Applied " .. name, vim.log.levels.TRACE)
 end
 
-function M.apply_all()
-  for patch in vim.fs.dir(Config.options.patches_path) do
+---@param opts LazyLocalPatcher.Options
+function M.apply_all(opts)
+  for patch in vim.fs.dir(opts.patches_path) do
     if patch:match("%.patch$") ~= nil then
-      local patch_path = Config.options.patches_path .. "/" .. patch
-      local repo_path = Config.options.lazy_path .. "/" .. patch:gsub("%.patch", "")
+      local patch_path = opts.patches_path .. "/" .. patch
+      local repo_path = opts.lazy_path .. "/" .. patch:gsub("%.patch", "")
       M.apply_patch(patch, patch_path, repo_path)
     end
   end
 end
 
-function M.restore_all()
-  for patch in vim.fs.dir(Config.options.patches_path) do
+---@param opts LazyLocalPatcher.Options
+function M.restore_all(opts)
+  for patch in vim.fs.dir(opts.patches_path) do
     if patch:match("%.patch$") ~= nil then
-      local repo_path = Config.options.lazy_path .. "/" .. patch:gsub("%.patch", "")
+      local repo_path = opts.lazy_path .. "/" .. patch:gsub("%.patch", "")
       M.restore_repo(patch, repo_path)
     end
   end
 end
 
-function M.create_group_and_cmd()
-  local group_id = vim.api.nvim_create_augroup("LazyPatches", {})
+---@param opts LazyLocalPatcher.Options
+function M.create_group_and_cmd(opts)
+  local group_id = vim.api.nvim_create_augroup("LazyLocalPatcher", {})
   M.sync_call = false
 
   vim.api.nvim_create_autocmd("User", {
@@ -71,7 +74,7 @@ function M.create_group_and_cmd()
     pattern = { "LazySyncPre", "LazyInstallPre", "LazyUpdatePre", "LazyCheckPre" },
     callback = function(ev)
       if not M.sync_call then
-        M.restore_all()
+        M.restore_all(opts)
       end
       if ev.match == "LazySyncPre" then
         M.sync_call = true
@@ -85,9 +88,9 @@ function M.create_group_and_cmd()
     pattern = { "LazySync", "LazyInstall", "LazyUpdate", "LazyCheck" },
     callback = function(ev)
       if not M.sync_call then
-        M.apply_all()
+        M.apply_all(opts)
       elseif ev.match == "LazySync" then
-        M.apply_all()
+        M.apply_all(opts)
         M.sync_call = false
       end
     end,
