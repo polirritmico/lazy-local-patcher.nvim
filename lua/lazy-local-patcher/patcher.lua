@@ -1,14 +1,28 @@
-local util = require("lazy-local-patcher.util")
 local Config = require("lazy-local-patcher.config")
 
 local M = {}
 
 local patcher = "[lazy-local-patcher] "
 
+---@param path string
+---@param cmd string[] git command to execute
+---@param error_level number? log level for errors. Hide if nil or false
+M.git_execute = function(path, cmd, error_level)
+  local command = { "git", "-C", path, unpack(cmd) }
+  local command_output = vim.fn.system(command)
+  if vim.v.shell_error ~= 0 then
+    if error_level then
+      M.error(command, command_output, error_level)
+    end
+    return { success = false, output = command_output }
+  end
+  return { success = true, output = command_output }
+end
+
 ---@param name string Name of the plugin repository
 ---@param plugin_path string Full path of the plugin repository
 function M.restore_repo(name, plugin_path)
-  local out = util.git_execute(plugin_path, { "restore", "." })
+  local out = M.git_execute(plugin_path, { "restore", "." })
   if not out.success then
     local msg = string.format(": Error restoring the repository. Check '%s'", plugin_path)
     vim.notify(patcher .. name .. msg, vim.log.levels.ERROR)
@@ -20,7 +34,7 @@ end
 ---@param patch_path string Full path of the patch file
 ---@param plugin_path string Full path of the plugin repository
 function M.apply_patch(name, patch_path, plugin_path)
-  local out = util.git_execute(plugin_path, { "apply", "--ignore-space-change", patch_path })
+  local out = M.git_execute(plugin_path, { "apply", "--ignore-space-change", patch_path })
   if not out.success then
     local msg = string.format(": Error applying patches to the repository. Check '%s'", plugin_path)
     vim.notify(patcher .. name .. msg, vim.log.levels.ERROR)
