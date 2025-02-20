@@ -12,7 +12,9 @@
 
 Sometimes, I need to apply small patches to a plugin to fulfill a very niche use
 case or to fix something without waiting for the PR to reach upstream. However,
-when doing so, Lazy can't sync the repo because there are local changes.
+when doing so, Lazy can't sync the repo because there are local changes. While
+Lazy provides ways to handle this (like `dev` or `dir`), they require manually
+monitoring and merging upstream changes to stay in sync...
 
 This small plugin addresses this issue by automatically applying the patches
 through git commands (if possible) and reverting them before Lazy starts its
