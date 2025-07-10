@@ -44,10 +44,10 @@ end
 
 ---@param opts LazyLocalPatcher.Options
 function M.apply_all(opts)
-  for patch in vim.fs.dir(opts.patches_path) do
+  for patch in vim.fs.dir(opts.patches_path, { depth = 2 }) do
     if patch:match("%.patch$") ~= nil then
       local patch_path = opts.patches_path .. "/" .. patch
-      local repo_path = opts.lazy_path .. "/" .. patch:gsub("%.patch", "")
+      local repo_path = opts.lazy_path .. "/" .. patch:gsub("/.*", ""):gsub("%.patch$", "")
       M.apply_patch(patch, patch_path, repo_path)
     end
   end
@@ -55,8 +55,8 @@ end
 
 ---@param opts LazyLocalPatcher.Options
 function M.restore_all(opts)
-  for patch in vim.fs.dir(opts.patches_path) do
-    if patch:match("%.patch$") ~= nil then
+  for patch, type in vim.fs.dir(opts.patches_path) do
+    if patch:match("%.patch$") ~= nil or type == "directory" then
       local repo_path = opts.lazy_path .. "/" .. patch:gsub("%.patch", "")
       M.restore_repo(patch, repo_path)
     end

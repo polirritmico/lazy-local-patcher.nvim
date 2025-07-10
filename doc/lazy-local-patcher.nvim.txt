@@ -61,12 +61,16 @@ dir: (default path)
     $ mkdir ~/.config/nvim/patches
 <
 
-Here you could add your patches. Two considerations:
+Here you could add your patches.
 
-1. Only **one file** per plugin.
-2. The name of the patch should match the repository name (more precisely, the
-directory name inside the Lazy root folder) and the file extension must be
-`.patch`. e.g.: `nvim-treesitter.patch`
+- If you need just one patch for a plugin, you can save it in the
+  `patches` directory. The name of the patch should match the repository name
+  (more precisely, the directory name inside the Lazy root folder), and the
+  file extension must be `.patch`. E.g.: `nvim-treesitter.patch` or
+  `telescope.nvim.patch`.
+- If you need multiple patches for a plugin, you can create a subdirectory
+  with a name matching the plugin repository name and save your patches inside
+  that directory. E.g.: `nvim-treesitter/1.patch` or `telescope.nvim/1.patch`.
 
 
 CONFIGURATION                          *lazy-local-patcher.nvim-configuration*
