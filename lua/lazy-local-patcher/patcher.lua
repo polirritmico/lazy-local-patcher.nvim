@@ -44,12 +44,18 @@ end
 
 ---@param opts LazyLocalPatcher.Options
 function M.apply_all(opts)
+  local patches = {}
   for patch in vim.fs.dir(opts.patches_path, { depth = 2 }) do
     if patch:match("%.patch$") ~= nil then
-      local patch_path = opts.patches_path .. "/" .. patch
-      local repo_path = opts.lazy_path .. "/" .. patch:gsub("/.*", ""):gsub("%.patch$", "")
-      M.apply_patch(patch, patch_path, repo_path)
+      table.insert(patches, patch)
     end
+  end
+  table.sort(patches)
+
+  for _, patch in ipairs(patches) do
+    local patch_path = opts.patches_path .. "/" .. patch
+    local repo_path = opts.lazy_path .. "/" .. patch:gsub("/.*", ""):gsub("%.patch$", "")
+    M.apply_patch(patch, patch_path, repo_path)
   end
 end
 
