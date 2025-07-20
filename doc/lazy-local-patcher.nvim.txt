@@ -1,4 +1,4 @@
-*lazy-local-patcher.nvim.txt*  For Neovim >= 0.9 Last change: 2025 February 20
+*lazy-local-patcher.nvim.txt*    For Neovim >= 0.9   Last change: 2025 July 20
 
 ==============================================================================
 Table of Contents                  *lazy-local-patcher.nvim-table-of-contents*
@@ -61,16 +61,30 @@ dir: (default path)
     $ mkdir ~/.config/nvim/patches
 <
 
-Here you could add your patches.
+Here you can add your patches in two ways:
 
-- If you need just one patch for a plugin, you can save it in the
-  `patches` directory. The name of the patch should match the repository name
-  (more precisely, the directory name inside the Lazy root folder), and the
-  file extension must be `.patch`. E.g.: `nvim-treesitter.patch` or
-  `telescope.nvim.patch`.
-- If you need multiple patches for a plugin, you can create a subdirectory
-  with a name matching the plugin repository name and save your patches inside
-  that directory. E.g.: `nvim-treesitter/1.patch` or `telescope.nvim/1.patch`.
+1. **Single patch:** Save it directly in the `patches` directory and use the
+`.patch` extension. For example:
+
+>
+    patches/
+    ├── nvim-treesitter.patch
+    └── telescope.nvim.patch
+<
+
+
+2. **Multiple patches:** Create a subdirectory with the plugin name and place the
+patch files inside. For example:
+
+>
+    patches/
+    ├── nvim-treesitter.patch
+    └── telescope.nvim/
+        ├── 01-custom-example-layout.patch
+        └── 02-custom-example-actions.patch
+<
+
+
 
 
 CONFIGURATION                          *lazy-local-patcher.nvim-configuration*
